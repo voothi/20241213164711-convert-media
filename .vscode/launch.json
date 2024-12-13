@@ -1,0 +1,22 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "name": "Python Debugger: Current File with Arguments",
+            "type": "debugpy",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "args": [
+                // "C:\\Tools\\convert_media\\input.wav", // Replace with your actual input file argument
+                "C:\\Users\\voothi\\Documents\\20241030174213-dr-house-s01-e01\\20241103211539\\20241213123245 S01E01 Pilot de.de.wav", // Replace with your actual input file argument
+                // "C:\\Tools\\convert_media\\output.mp4", // Replace with your desired output file argument
+                "C:\\Users\\voothi\\Documents\\20241030174213-dr-house-s01-e01\\20241103211539\\20241213123245 S01E01 Pilot de.de.mp4", // Replace with your desired output file argument
+                "C:\\Tools\\ffmpeg\\ffmpeg-7.1-essentials_build\\bin\\ffmpeg.exe" // Replace with your actual ffmpeg path
+            ]
+        }
+    ]
+}

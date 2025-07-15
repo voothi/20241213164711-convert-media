@@ -16,13 +16,13 @@ def process_media_file(input_file, output_file, ffmpeg_path):
         '-shortest',
         '-c:v', 'libx264',
         '-preset', 'veryslow',
-        '-b:v', '0',
-        '-x264opts', 'bitrate=1',
-        '-r', '15',
+        '-b:v', '20k',
+        '-g', '12',
         '-pix_fmt', 'yuv420p',
-        '-c:a', 'aac',       # Always re-encode audio to AAC for standardization
+        '-c:a', 'aac',
         '-b:a', '128k',
-        '-y',                # Automatically overwrite the output file if it exists
+        '-movflags', '+faststart',
+        '-y',
         output_file
     ]
 

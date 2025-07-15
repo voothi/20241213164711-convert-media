@@ -8,7 +8,7 @@ def convert_wav_to_mp4(input_file, output_file, ffmpeg_path):
         ffmpeg_path,
         '-i', input_file,
         '-f', 'lavfi',
-        '-i', 'color=c=black:s=176x144',
+        '-i', 'color=c=black:s=256x144',
         '-shortest',
         '-c:v', 'libx264',
         '-preset', 'veryslow',

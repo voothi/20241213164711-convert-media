@@ -2,9 +2,10 @@ import subprocess
 import argparse
 import os
 
-def convert_wav_to_mp4(input_file, output_file, ffmpeg_path):
+def process_media_file(input_file, output_file, ffmpeg_path):
     """
-    Converts a single WAV file to MP4 with a black screen using ffmpeg.
+    Converts a media file (audio or video) to a standard MP4 with a black screen.
+    It takes the audio track from the source file and replaces the video stream.
     """
     # Creating the ffmpeg command
     command = [
@@ -19,18 +20,21 @@ def convert_wav_to_mp4(input_file, output_file, ffmpeg_path):
         '-x264opts', 'bitrate=1',
         '-r', '15',
         '-pix_fmt', 'yuv420p',
-        '-c:a', 'aac',
+        '-c:a', 'aac',       # Always re-encode audio to AAC for standardization
         '-b:a', '128k',
+        '-y',                # Automatically overwrite the output file if it exists
         output_file
     ]
 
-    # Executing the command and hiding ffmpeg's output
-    print(f"Converting: {os.path.basename(input_file)} -> {os.path.basename(output_file)}")
+    # Executing the command
+    print(f"Processing: {os.path.basename(input_file)} -> {os.path.basename(output_file)}")
     try:
+        # check=True will raise an exception if ffmpeg returns an error
         subprocess.run(command, check=True, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
-        print(f"Successfully converted: '{output_file}'")
+        print(f"Successfully processed: '{output_file}'")
     except subprocess.CalledProcessError as e:
-        print(f"Error converting file {input_file}:")
+        print(f"Error processing file {input_file}:")
+        # Print the error from stderr to understand what went wrong with ffmpeg
         print(e.stderr.decode('utf-8', errors='ignore'))
     except FileNotFoundError:
         print(f"Error: Could not find ffmpeg at path '{ffmpeg_path}'. Please check the path.")
@@ -39,34 +43,35 @@ def convert_wav_to_mp4(input_file, output_file, ffmpeg_path):
 
 def main():
     # Setting up the argument parser
-    parser = argparse.ArgumentParser(description='Converts all new WAV files from a source folder to MP4 in a destination folder.')
+    parser = argparse.ArgumentParser(description='Converts new audio/video files from a source folder to a standard MP4 format.')
     parser.add_argument('source_folder', metavar='source', type=str, 
-                        help='Source folder with WAV files')
+                        help='Source folder with media files (wav, mp3, mp4)')
     parser.add_argument('destination_folder', metavar='destination', type=str, 
-                        help='Destination folder to save MP4 files')
+                        help='Destination folder to save the resulting MP4 files')
     parser.add_argument('ffmpeg_path', metavar='ffmpeg', type=str, 
                         help='Path to the ffmpeg executable (ffmpeg.exe)')
 
     args = parser.parse_args()
 
     # --- Path validation ---
-    # Check if the source folder exists
     if not os.path.isdir(args.source_folder):
         print(f"Error: Source folder '{args.source_folder}' does not exist.")
         return
 
-    # Check if ffmpeg exists
     if not os.path.isfile(args.ffmpeg_path):
         print(f"Error: ffmpeg not found at path '{args.ffmpeg_path}'.")
         return
 
-    # Create the destination folder if it doesn't exist
     os.makedirs(args.destination_folder, exist_ok=True)
 
     # --- File comparison and processing logic ---
-    # Get a list of WAV files in the source folder
+    
+    # Define a tuple of supported extensions
+    SUPPORTED_EXTENSIONS = ('.wav', '.mp3', '.mp4')
+
+    # Get a list of supported files in the source folder
     try:
-        source_files = [f for f in os.listdir(args.source_folder) if f.lower().endswith('.wav')]
+        source_files = [f for f in os.listdir(args.source_folder) if f.lower().endswith(SUPPORTED_EXTENSIONS)]
     except FileNotFoundError:
         print(f"Error: Could not access folder '{args.source_folder}'.")
         return
@@ -75,7 +80,6 @@ def main():
     try:
         dest_files = [f for f in os.listdir(args.destination_folder) if f.lower().endswith('.mp4')]
     except FileNotFoundError:
-        # This error shouldn't happen since we create the folder above, but just in case
         print(f"Error: Could not access folder '{args.destination_folder}'.")
         return
         
@@ -85,27 +89,27 @@ def main():
     files_to_process_count = 0
     
     # Iterate over the source files
-    for wav_file in source_files:
+    for source_filename in source_files:
         # Get the base name of the file (without extension)
-        base_name = os.path.splitext(wav_file)[0]
+        base_name = os.path.splitext(source_filename)[0]
 
-        # Check if the processed file already exists
+        # Check if a processed file with the same base name already exists
         if base_name in dest_filenames_without_ext:
-            print(f"Skipping: File '{wav_file}' is already processed. ({base_name}.mp4 exists)")
+            print(f"Skipping: A file for '{source_filename}' already exists in the destination folder.")
             continue
         
         # If the file doesn't exist, start processing
         files_to_process_count += 1
-        input_path = os.path.join(args.source_folder, wav_file)
+        input_path = os.path.join(args.source_folder, source_filename)
         output_path = os.path.join(args.destination_folder, base_name + '.mp4')
         
         # Perform the conversion
-        convert_wav_to_mp4(input_path, output_path, args.ffmpeg_path)
+        process_media_file(input_path, output_path, args.ffmpeg_path)
 
     if files_to_process_count == 0:
-        print("\nAll files are already processed. No new files to convert.")
+        print("\nAll applicable files have been processed. No new files to convert.")
     else:
-        print(f"\nProcessing complete! Converted new files: {files_to_process_count}.")
+        print(f"\nProcessing complete! Processed new files: {files_to_process_count}.")
 
 
 if __name__ == '__main__':

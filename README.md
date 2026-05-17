@@ -1,6 +1,6 @@
 # Convert Media Utility
 
-[![Version](https://img.shields.io/badge/version-v1.0.0-blue)](https://github.com/voothi/20241213164711-convert-media)
+[![Version](https://img.shields.io/badge/version-v1.0.2-blue)](https://github.com/voothi/20241213164711-convert-media)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 
 A lightweight Windows utility that converts selected media files into MP4 videos with a black canvas and original audio, including Explorer SendTo integration and ZID-based duplicate handling.

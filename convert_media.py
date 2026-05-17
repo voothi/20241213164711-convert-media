@@ -23,8 +23,9 @@ DEFAULT_DUPLICATE_INDEX_START = 2
 DEFAULT_VIDEO_FILTER = 'color=c=black:s=256x144'
 DEFAULT_VIDEO_CODEC = 'libx264'
 DEFAULT_VIDEO_PRESET = 'veryslow'
-DEFAULT_VIDEO_BITRATE = '0'
-DEFAULT_VIDEO_X264OPTS = 'bitrate=1'
+DEFAULT_VIDEO_CRF = '36'
+DEFAULT_VIDEO_TUNE = 'stillimage'
+DEFAULT_VIDEO_X264_PARAMS = 'keyint=300:min-keyint=300:scenecut=0'
 DEFAULT_VIDEO_FPS = '15'
 DEFAULT_PIXEL_FORMAT = 'yuv420p'
 DEFAULT_AUDIO_CODEC = 'aac'
@@ -42,8 +43,9 @@ def build_ffmpeg_command(input_file, output_file, ffmpeg_path):
         '-shortest',
         '-c:v', DEFAULT_VIDEO_CODEC,
         '-preset', DEFAULT_VIDEO_PRESET,
-        '-b:v', DEFAULT_VIDEO_BITRATE,
-        '-x264opts', DEFAULT_VIDEO_X264OPTS,
+        '-crf', DEFAULT_VIDEO_CRF,
+        '-tune', DEFAULT_VIDEO_TUNE,
+        '-x264-params', DEFAULT_VIDEO_X264_PARAMS,
         '-r', DEFAULT_VIDEO_FPS,
         '-pix_fmt', DEFAULT_PIXEL_FORMAT,
         '-c:a', DEFAULT_AUDIO_CODEC,

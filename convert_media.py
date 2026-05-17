@@ -191,6 +191,18 @@ def install_sendto_shortcut(ffmpeg_path, output_mode, duplicate_mode, converted_
         f'--converted-subdir-name "{converted_subdir_name}"'
     )
 
+    print('Installing SendTo shortcut...')
+    print(f'Script path: {script_path}')
+    print(f'Pythonw path: {pythonw_path}')
+    print(f'SendTo dir: {sendto_dir}')
+    print(f'Shortcut path: {shortcut_path}')
+    print(f'ffmpeg path: {ffmpeg_path}')
+    print(
+        'Shortcut options: '
+        f'output_mode={output_mode}, duplicate_mode={duplicate_mode}, '
+        f'converted_subdir_name={converted_subdir_name}'
+    )
+
     # Set IconLocation to pythonw to make icon behavior deterministic in Explorer.
     ps_script = (
         "$WshShell = New-Object -ComObject WScript.Shell; "
@@ -206,6 +218,8 @@ def install_sendto_shortcut(ffmpeg_path, output_mode, duplicate_mode, converted_
     subprocess.run(['powershell', '-NoProfile', '-Command', ps_script], check=True)
     print(f'SendTo shortcut created: {shortcut_path}')
     print(f'Output mode: {output_mode}, duplicate mode: {duplicate_mode}')
+    print('Usage: Select files in Explorer -> Right click -> Send to -> FFmpeg Convert Media')
+    print('SUCCESS: SendTo installation completed.')
 
 
 def parse_args():
